@@ -2,7 +2,10 @@
   "name": "pollster",
   "version": "0.0.1",
   "description": "Making HTTP polling less annoying for everyone.",
-  "keywords": [ "polling", "http" ],
+  "keywords": [
+    "polling",
+    "http"
+  ],
   "license": "MIT",
   "author": "Pieter van de Bruggen",
   "main": "index.js",
@@ -13,5 +16,8 @@
   },
   "bugs": {
     "url": "https://github.com/pvande/pollster/issues"
+  },
+  "dependencies": {
+    "fetch-ponyfill": "^4.0.0"
   }
 }
