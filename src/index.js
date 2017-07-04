@@ -1,12 +1,13 @@
 const { fetch } = require('fetch-ponyfill')()
 const EventEmitter = require('events')
 
+const defaults = { interval: 500 }
 module.exports = class Pollster extends EventEmitter {
   constructor(url, options = {}) {
     super()
     this.running = false
     this.url = url
-    this.options = Object.assign({}, { interval: 500 }, options)
+    this.options = Object.assign({}, defaults, options)
   }
 
   start() {
@@ -29,9 +30,15 @@ module.exports = class Pollster extends EventEmitter {
       this.emit('error', err)
     }
 
-    this.running = setInterval(() => {
-      this.running && fetch(this.url).then(onSuccess, onFailure)
-    }, this.options.interval)
+    const poll = () => {
+      if (!this.running) {
+        return
+      }
+
+      fetch(this.url).then(onSuccess, onFailure)
+    }
+
+    this.running = setInterval(poll, this.options.interval)
   }
 
   stop() {
