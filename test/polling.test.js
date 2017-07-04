@@ -50,19 +50,6 @@ describe('polling behavior', () => {
     pollerFor('/counter', {}, 1600, assertions)
   })
 
-  test('allows for custom intervals', done => {
-    const assertions = errorCatcher(done, data => {
-      expect(data).toEqual({
-        response: ['1', '2', '3', '4'],
-        success: ['1', '2', '3', '4'],
-        failure: [],
-        error: [],
-      })
-    })
-
-    pollerFor('/counter', { interval: 200 }, 900, assertions)
-  })
-
   test('follows redirects', done => {
     const assertions = errorCatcher(done, data => {
       expect(data).toEqual({
@@ -116,6 +103,41 @@ describe('polling behavior', () => {
       })
 
       pollerFor(':300000', {}, 600, assertions)
+    })
+  })
+
+  describe('options', () => {
+    test('custom intervals', done => {
+      const assertions = errorCatcher(done, data => {
+        expect(data).toEqual({
+          response: ['1', '2', '3', '4'],
+          success: ['1', '2', '3', '4'],
+          failure: [],
+          error: [],
+        })
+      })
+
+      pollerFor('/counter', { interval: 200 }, 900, assertions)
+    })
+
+    describe('parsing as', () => {
+      test('json', done => {
+        const assertions = errorCatcher(done, data => {
+          expect(data).toEqual({
+            response: [{ number: 1 }, { number: 2 }, { number: 3 }],
+            success: [{ number: 1 }, { number: 2 }, { number: 3 }],
+            failure: [],
+            error: [],
+          })
+        })
+
+        pollerFor('/counter/json', { as: 'json' }, 1600, assertions)
+      })
+
+      test('arrayBuffer')
+      test('blob')
+      test('buffer') // Node only
+      test('textConverted') // Node only
     })
   })
 })

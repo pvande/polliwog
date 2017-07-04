@@ -17,6 +17,12 @@ const router = (req, res) => {
       res.end(`${state.counter}`)
       break
 
+    case '/counter/json':
+      state = Object.assign({}, state, { counter: state.counter + 1 })
+      res.statusCode = 200
+      res.end(`{"number":${state.counter}}`)
+      break
+
     case '/redirect/301':
       res.statusCode = 301
       res.setHeader('Location', '/hello')
