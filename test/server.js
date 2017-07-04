@@ -6,10 +6,39 @@ let state = initialState
 
 const router = (req, res) => {
   switch (parse(req.url).pathname) {
+    case '/hello':
+      res.statusCode = 200
+      res.end('Hi!')
+      break
+
     case '/counter':
       state = Object.assign({}, state, { counter: state.counter + 1 })
       res.statusCode = 200
       res.end(`${state.counter}`)
+      break
+
+    case '/redirect/301':
+      res.statusCode = 301
+      res.setHeader('Location', '/hello')
+      res.end()
+      break
+
+    case '/redirect/chain':
+      res.statusCode = 301
+      res.setHeader('Location', '/redirect/301')
+      res.end()
+      break
+
+    case '/error/400':
+      res.statusCode = 400
+      res.setHeader('Content-Type', 'text/plain')
+      res.end('client error')
+      break
+
+    case '/error/500':
+      res.statusCode = 500
+      res.setHeader('Content-Type', 'text/plain')
+      res.end('server error')
       break
 
     default:

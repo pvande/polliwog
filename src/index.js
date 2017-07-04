@@ -21,7 +21,7 @@ module.exports = class Pollster extends EventEmitter {
       })
     }
 
-    async function onFailure(err) {
+    const onFailure = err => {
       if (!this.running) {
         return
       }
