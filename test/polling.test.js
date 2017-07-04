@@ -44,4 +44,12 @@ describe('polling behavior', () => {
 
     pollerFor('/counter', {}, 2100, assertions)
   })
+
+  test('allows for custom intervals', done => {
+    const assertions = errorCatcher(done, ({ success }) =>
+      expect(success).toEqual(['1', '2', '3', '4', '5']),
+    )
+
+    pollerFor('/counter', { interval: 400 }, 2100, assertions)
+  })
 })

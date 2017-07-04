@@ -6,6 +6,7 @@ module.exports = class Pollster extends EventEmitter {
     super()
     this.running = false
     this.url = url
+    this.options = Object.assign({}, { interval: 500 }, options)
   }
 
   start() {
@@ -30,7 +31,7 @@ module.exports = class Pollster extends EventEmitter {
 
     this.running = setInterval(() => {
       this.running && fetch(this.url).then(onSuccess, onFailure)
-    }, 500)
+    }, this.options.interval)
   }
 
   stop() {
