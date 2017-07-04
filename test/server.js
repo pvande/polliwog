@@ -1,12 +1,15 @@
 const http = require('http')
 const { parse } = require('url')
 
-let counter = 0
+const initialState = { counter: 0 }
+let state = initialState
+
 const router = (req, res) => {
   switch (parse(req.url).pathname) {
     case '/counter':
+      state = Object.assign({}, state, { counter: state.counter + 1 })
       res.statusCode = 200
-      res.end(`${(counter += 1)}`)
+      res.end(`${state.counter}`)
       break
 
     default:
@@ -31,6 +34,7 @@ class TestServer {
   }
 
   start(cb) {
+    state = initialState
     this.server.listen(0, this.hostname, () => {
       this.port = this.server.address().port
       cb()
