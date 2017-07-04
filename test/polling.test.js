@@ -38,17 +38,19 @@ const pollerFor = (path, options, duration, done) => {
 
 describe('polling behavior', () => {
   test('performs periodic requests', done => {
-    const assertions = errorCatcher(done, ({ success }) =>
-      expect(success).toEqual(['1', '2', '3', '4']),
-    )
+    const assertions = errorCatcher(done, ({ response, success }) => {
+      expect(response).toEqual(['1', '2', '3', '4'])
+      expect(success).toEqual(['1', '2', '3', '4'])
+    })
 
     pollerFor('/counter', {}, 2100, assertions)
   })
 
   test('allows for custom intervals', done => {
-    const assertions = errorCatcher(done, ({ success }) =>
-      expect(success).toEqual(['1', '2', '3', '4', '5']),
-    )
+    const assertions = errorCatcher(done, ({ response, success }) => {
+      expect(response).toEqual(['1', '2', '3', '4', '5'])
+      expect(success).toEqual(['1', '2', '3', '4', '5'])
+    })
 
     pollerFor('/counter', { interval: 400 }, 2100, assertions)
   })
