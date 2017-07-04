@@ -1,17 +1,8 @@
-const Pollster = require('../src/index')
 const TestServer = require('./server')
+const { pollerFor, errorCatcher } = require('./helpers')
 
 const server = new TestServer()
 const url = path => `http://${server.hostname}:${server.port}${path}`
-
-const errorCatcher = (done, fn) => (...args) => {
-  try {
-    fn(...args)
-    done()
-  } catch (e) {
-    done.fail(e)
-  }
-}
 
 beforeEach(done => {
   server.start(done)
@@ -20,21 +11,6 @@ beforeEach(done => {
 afterEach(done => {
   server.stop(done)
 })
-
-const pollerFor = (path, options, duration, done) => {
-  const data = { response: [], success: [], failure: [], error: [] }
-  const p = new Pollster(url(path), options)
-  p.on('response', x => data.response.push(x))
-  p.on('success', x => data.success.push(x))
-  p.on('failure', x => data.failure.push(x))
-  p.on('error', x => data.error.push(x))
-
-  p.start()
-  setTimeout(() => {
-    p.stop()
-    done(data)
-  }, duration)
-}
 
 describe('polling behavior', () => {
   test('performs periodic requests', done => {
@@ -47,7 +23,7 @@ describe('polling behavior', () => {
       })
     })
 
-    pollerFor('/counter', {}, 1600, assertions)
+    pollerFor(url('/counter'), {}, 1600, assertions)
   })
 
   test('follows redirects', done => {
@@ -60,7 +36,7 @@ describe('polling behavior', () => {
       })
     })
 
-    pollerFor('/redirect/chain', {}, 600, assertions)
+    pollerFor(url('/redirect/chain'), {}, 600, assertions)
   })
 
   describe('broadcasts unsuccessful requests', () => {
@@ -74,7 +50,7 @@ describe('polling behavior', () => {
         })
       })
 
-      pollerFor('/error/400', {}, 600, assertions)
+      pollerFor(url('/error/400'), {}, 600, assertions)
     })
 
     test('5xx errors', done => {
@@ -87,7 +63,7 @@ describe('polling behavior', () => {
         })
       })
 
-      pollerFor('/error/500', {}, 600, assertions)
+      pollerFor(url('/error/500'), {}, 600, assertions)
     })
 
     test('network errors', done => {
@@ -102,7 +78,7 @@ describe('polling behavior', () => {
         })
       })
 
-      pollerFor(':300000', {}, 600, assertions)
+      pollerFor(url(':300000'), {}, 600, assertions)
     })
   })
 
@@ -117,7 +93,7 @@ describe('polling behavior', () => {
         })
       })
 
-      pollerFor('/counter', { interval: 200 }, 900, assertions)
+      pollerFor(url('/counter'), { interval: 200 }, 900, assertions)
     })
 
     describe('parsing as', () => {
@@ -131,7 +107,7 @@ describe('polling behavior', () => {
           })
         })
 
-        pollerFor('/counter/json', { as: 'json' }, 1600, assertions)
+        pollerFor(url('/counter/json'), { as: 'json' }, 1600, assertions)
       })
 
       test('arrayBuffer')
