@@ -36,7 +36,10 @@ module.exports = class Pollster extends EventEmitter {
         return
       }
 
-      fetch(this.url).then(onSuccess).catch(onFailure)
+      fetch(this.url)
+        .then(onSuccess)
+        .catch(onFailure)
+        .then(() => this.emit('poll'))
     }
 
     this.running = setInterval(poll, this.interval)

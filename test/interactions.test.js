@@ -19,13 +19,10 @@ describe('interactions', () => {
         response: [],
         success: [],
         failure: [],
-        error: [
-          new SyntaxError('Unexpected token H in JSON at position 0'),
-          new SyntaxError('Unexpected token H in JSON at position 0'),
-        ],
+        error: [new SyntaxError('Unexpected token H in JSON at position 0')],
       })
     })
 
-    pollerFor(url('/hello'), { as: 'json' }, 1100, assertions)
+    pollerFor(url('/hello'), { as: 'json' }, 1, assertions)
   })
 })

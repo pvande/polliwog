@@ -1,6 +1,6 @@
 const Pollster = require('../src/index')
 
-module.exports.pollerFor = (url, options, duration, done) => {
+module.exports.pollerFor = (url, options, requests, done) => {
   const data = { response: [], success: [], failure: [], error: [] }
   const p = new Pollster(url, options)
   p.on('response', x => data.response.push(x))
@@ -8,11 +8,16 @@ module.exports.pollerFor = (url, options, duration, done) => {
   p.on('failure', x => data.failure.push(x))
   p.on('error', x => data.error.push(x))
 
+  let count = 0
+  p.on('poll', () => {
+    count += 1
+    if (count >= requests) {
+      p.stop()
+      done(data)
+    }
+  })
+
   p.start()
-  setTimeout(() => {
-    p.stop()
-    done(data)
-  }, duration)
 }
 
 module.exports.errorCatcher = (done, fn) => (...args) => {
