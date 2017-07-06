@@ -112,7 +112,7 @@ describe('polling behavior', () => {
         })
       })
 
-      pollerFor(url('/counter/json'), { as: 'json' }, 3, assertions)
+      pollerFor(url('/counter/json'), { json: true }, 3, assertions)
     })
   })
 })

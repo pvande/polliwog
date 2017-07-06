@@ -23,6 +23,6 @@ describe('interactions', () => {
       })
     })
 
-    pollerFor(url('/hello'), { as: 'json' }, 1, assertions)
+    pollerFor(url('/hello'), { json: true }, 1, assertions)
   })
 })
