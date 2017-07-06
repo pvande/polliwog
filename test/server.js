@@ -1,26 +1,95 @@
 const http = require('http')
 const { parse } = require('url')
+const date = require('../src/date')
 
-const initialState = { counter: 0 }
+const initialState = {
+  counter: 0,
+  etag: Math.random(),
+  modifiedAt: new Date(new Date().toUTCString()),
+}
 let state = initialState
 
 const router = (req, res) => {
+  res.statusCode = 200 // unless otherwise stated
+
   switch (parse(req.url).pathname) {
     case '/hello':
-      res.statusCode = 200
       res.end('Hi!')
       break
 
     case '/counter':
       state = Object.assign({}, state, { counter: state.counter + 1 })
-      res.statusCode = 200
       res.end(`${state.counter}`)
       break
 
     case '/counter/json':
       state = Object.assign({}, state, { counter: state.counter + 1 })
-      res.statusCode = 200
       res.end(`{"number":${state.counter}}`)
+      break
+
+    case '/cache/max-age':
+      state = Object.assign({}, state, { counter: state.counter + 1 })
+      res.setHeader('Cache-Control', 'private,max-age=2')
+      res.end(`${state.counter}`)
+      break
+
+    case '/cache/expires':
+      state = Object.assign({}, state, { counter: state.counter + 1 })
+      res.setHeader('Cache-Control', 'private')
+      res.setHeader('Expires', date.secondsFromNow(2).toUTCString())
+      res.end(`${state.counter}`)
+      break
+
+    case '/cache/skewed-expires':
+      state = Object.assign({}, state, { counter: state.counter + 1 })
+      res.setHeader('Cache-Control', 'private')
+      res.setHeader('Date', date.secondsFromNow(-32).toUTCString())
+      res.setHeader('Expires', date.secondsFromNow(-2).toUTCString())
+      res.end(`${state.counter}`)
+      break
+
+    case '/cache/max-age-and-expires':
+      state = Object.assign({}, state, { counter: state.counter + 1 })
+      res.setHeader('Cache-Control', 'private,max-age=1')
+      res.setHeader('Expires', date.secondsFromNow(30).toUTCString())
+      res.end(`${state.counter}`)
+      break
+
+    case '/cache/no-cache':
+      state = Object.assign({}, state, { counter: state.counter + 1 })
+      res.setHeader('Cache-Control', 'no-cache')
+      res.end(`${state.counter}`)
+      break
+
+    case '/cache/last-modified':
+      res.setHeader('Cache-Control', 'private')
+      res.setHeader('Last-Modified', state.modifiedAt.toUTCString())
+
+      if (new Date(req.headers['if-modified-since']) >= state.modifiedAt) {
+        res.statusCode = 304
+        res.end()
+
+        const modifiedAt = new Date(new Date().toUTCString())
+        state = Object.assign({}, state, { modifiedAt })
+      } else {
+        state = Object.assign({}, state, { counter: state.counter + 1 })
+        res.end(`${state.counter}`)
+      }
+      break
+
+    case '/cache/etag':
+      res.setHeader('Cache-Control', 'private')
+      res.setHeader('Etag', `${state.etag}`)
+
+      if (req.headers['if-none-match'] === `${state.etag}`) {
+        res.statusCode = 304
+        res.end()
+
+        state = Object.assign({}, state, { etag: Math.random() })
+      } else {
+        state = Object.assign({}, state, { counter: state.counter + 1 })
+        res.end(`${state.counter}`)
+      }
       break
 
     case '/redirect/301':

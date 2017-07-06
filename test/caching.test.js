@@ -12,34 +12,34 @@ afterEach(done => {
   server.stop(done)
 })
 
-describe('interactions', () => {
-  test('parsing a non-json source as json', done => {
+describe('caching', () => {
+  test('max-age support', done => {
     const assertions = errorCatcher(done, data => {
       expect(data).toEqual({
-        response: [],
-        success: [],
-        failure: [],
-        error: [new SyntaxError('Unexpected token H in JSON at position 0')],
-      })
-    })
-
-    pollerFor(url('/hello'), { json: true }, 1, assertions)
-  })
-
-  test('date and expires timestamps are skewed', done => {
-    const assertions = errorCatcher(done, data => {
-      expect(data).toEqual({
-        response: ['1'],
-        success: ['1'],
+        response: ['1', '2'],
+        success: ['1', '2'],
         failure: [],
         error: [],
       })
     })
 
-    pollerFor(url('/cache/skewed-expires'), {}, 5, assertions)
+    pollerFor(url('/cache/max-age'), {}, 6, assertions)
   })
 
-  test('endpoint specifies both max-age and expires headers', done => {
+  test('expires support', done => {
+    const assertions = errorCatcher(done, data => {
+      expect(data).toEqual({
+        response: ['1', '2'],
+        success: ['1', '2'],
+        failure: [],
+        error: [],
+      })
+    })
+
+    pollerFor(url('/cache/expires'), {}, 6, assertions)
+  })
+
+  test('etag support', done => {
     const assertions = errorCatcher(done, data => {
       expect(data).toEqual({
         response: ['1', '2', '3'],
@@ -49,6 +49,19 @@ describe('interactions', () => {
       })
     })
 
-    pollerFor(url('/cache/max-age-and-expires'), {}, 6, assertions)
+    pollerFor(url('/cache/etag'), {}, 6, assertions)
+  })
+
+  test('last-modified support', done => {
+    const assertions = errorCatcher(done, data => {
+      expect(data).toEqual({
+        response: ['1', '2', '3'],
+        success: ['1', '2', '3'],
+        failure: [],
+        error: [],
+      })
+    })
+
+    pollerFor(url('/cache/last-modified'), {}, 6, assertions)
   })
 })
