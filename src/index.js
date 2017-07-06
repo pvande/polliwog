@@ -18,11 +18,11 @@ module.exports = class Pollster extends EventEmitter {
     const emitter = this
     const fetchData = cachedFetcher(this.url, () => !this.running)
 
-    let lastOk, lastResult
+    let lastOk, lastResult, processedResult
 
     const poll = async function() {
       try {
-        let [ok, result] = await fetchData()
+        const [ok, result] = await fetchData()
 
         if (ok === lastOk && result === lastResult) {
           return
@@ -31,12 +31,10 @@ module.exports = class Pollster extends EventEmitter {
           lastResult = result
         }
 
-        if (emitter.parseJSON) {
-          result = JSON.parse(result)
-        }
+        processedResult = emitter.parseJSON ? JSON.parse(result) : result
 
-        emitter.emit('response', result)
-        emitter.emit(ok ? 'success' : 'failure', result)
+        emitter.emit('response', processedResult)
+        emitter.emit(ok ? 'success' : 'failure', processedResult)
       } catch (err) {
         if (err !== ABORT) {
           emitter.emit('error', err)
