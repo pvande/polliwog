@@ -1,9 +1,7 @@
 const { fetch } = require('fetch-ponyfill')()
 const date = require('./date')
 
-const ABORT = { reason: 'ABORTED' }
-
-module.exports = (url, isStopped) => {
+module.exports = url => {
   let cacheCode, cacheValue
   let lastModified, etag
   let cacheExpires = new Date()
@@ -44,18 +42,11 @@ module.exports = (url, isStopped) => {
   }
 
   return async function() {
-    if (isStopped()) {
-      throw ABORT
-    }
-
     if (cacheExpires > new Date()) {
       return [cacheCode, cacheValue]
     }
 
     const response = await fetch(url, { headers: conditionalHeaders() })
-    if (isStopped()) {
-      throw ABORT
-    }
 
     if ((etag || lastModified) && response.status == 304) {
       return [cacheCode, cacheValue]
@@ -70,5 +61,3 @@ module.exports = (url, isStopped) => {
     return [cacheCode, cacheValue]
   }
 }
-
-module.exports.ABORT = ABORT

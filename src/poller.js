@@ -1,5 +1,3 @@
-const { ABORT } = require('./fetcher')
-
 module.exports = function(fetchData, emit, options = {}) {
   let lastOk, lastResult, processedResult
   return async function() {
@@ -19,9 +17,7 @@ module.exports = function(fetchData, emit, options = {}) {
       emit('response', processedResult)
       emit(ok ? 'success' : 'failure', processedResult)
     } catch (err) {
-      if (err !== ABORT) {
-        emit('error', err)
-      }
+      emit('error', err)
     } finally {
       emit('poll')
     }

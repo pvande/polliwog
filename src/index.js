@@ -15,8 +15,7 @@ module.exports = class Pollster extends EventEmitter {
 
   start() {
     const emit = this.emit.bind(this)
-    const stopProcessing = () => !this.running
-    const fetchData = Fetcher(this.url, stopProcessing)
+    const fetchData = Fetcher(this.url)
     const poll = Poller(fetchData, emit, {
       json: this.json,
       emitUnchanged: this.emitUnchanged,
