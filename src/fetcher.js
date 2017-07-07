@@ -26,15 +26,14 @@ module.exports = url => {
       return
     }
 
-    const serverDate = headers.get('Date') || ''
+    const serverDate = headers.get('Date')
     const expires = headers.get('Expires') || ''
     const [_, age] = cacheControl.match(/max-age=(\d+)/) || []
 
     if (age) {
-      cacheExpires = date.secondsFromNow(parseInt(age))
+      cacheExpires = date.relativeAge(parseInt(age))
     } else if (expires) {
-      const freshnessDuration = date.calculateSkew(serverDate, expires)
-      cacheExpires = date.secondsFromNow(freshnessDuration)
+      cacheExpires = date.relativeExpires(serverDate, expires)
     }
 
     lastModified = headers.get('Last-Modified')

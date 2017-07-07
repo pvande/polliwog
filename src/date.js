@@ -1,10 +1,8 @@
-module.exports.secondsFromNow = n => {
-  return new Date(new Date().getTime() + 1000 * n)
-}
+const msSinceEpoch = date => new Date(date).getTime() || 0
+const difference = (date, offset) => msSinceEpoch(offset) - msSinceEpoch(date)
+const msFromNow = n => new Date(new Date().getTime() + n)
 
-module.exports.calculateSkew = (date, offset) => {
-  const parsedDate = new Date(date).getTime() || 0
-  const parsedOffset = new Date(offset).getTime() || 0
+const relativeAge = seconds => msFromNow(1000 * seconds)
+const relativeExpires = (date, exp) => msFromNow(difference(date, exp))
 
-  return (parsedOffset - parsedDate) / 1000
-}
+module.exports = { relativeAge, relativeExpires }

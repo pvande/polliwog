@@ -36,22 +36,29 @@ const router = (req, res) => {
     case '/cache/expires':
       state = Object.assign({}, state, { counter: state.counter + 1 })
       res.setHeader('Cache-Control', 'private')
-      res.setHeader('Expires', date.secondsFromNow(2).toUTCString())
+      res.setHeader('Expires', date.relativeAge(2).toUTCString())
       res.end(`${state.counter}`)
       break
 
     case '/cache/skewed-expires':
       state = Object.assign({}, state, { counter: state.counter + 1 })
       res.setHeader('Cache-Control', 'private')
-      res.setHeader('Date', date.secondsFromNow(-32).toUTCString())
-      res.setHeader('Expires', date.secondsFromNow(-2).toUTCString())
+      res.setHeader('Date', date.relativeAge(-32).toUTCString())
+      res.setHeader('Expires', date.relativeAge(-2).toUTCString())
+      res.end(`${state.counter}`)
+      break
+
+    case '/cache/invalid-expires':
+      state = Object.assign({}, state, { counter: state.counter + 1 })
+      res.setHeader('Cache-Control', 'private')
+      res.setHeader('Expires', 'Yes.')
       res.end(`${state.counter}`)
       break
 
     case '/cache/max-age-and-expires':
       state = Object.assign({}, state, { counter: state.counter + 1 })
       res.setHeader('Cache-Control', 'private,max-age=1')
-      res.setHeader('Expires', date.secondsFromNow(30).toUTCString())
+      res.setHeader('Expires', date.relativeAge(30).toUTCString())
       res.end(`${state.counter}`)
       break
 
