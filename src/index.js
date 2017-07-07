@@ -2,13 +2,14 @@ const EventEmitter = require('events')
 const Fetcher = require('./fetcher')
 const Poller = require('./poller')
 
-const defaults = { interval: 500, json: false }
+const defaults = { interval: 500, json: false, emitUnchanged: false }
 module.exports = class Pollster extends EventEmitter {
   constructor(url, options = {}) {
     super()
     this.running = false
     this.url = url
     this.interval = options.interval || defaults.interval
+    this.emitUnchanged = options.emitUnchanged || defaults.emitUnchanged
     this.json = options.json || defaults.json
   }
 
@@ -16,7 +17,10 @@ module.exports = class Pollster extends EventEmitter {
     const emit = this.emit.bind(this)
     const stopProcessing = () => !this.running
     const fetchData = Fetcher(this.url, stopProcessing)
-    const poll = Poller(fetchData, emit, { json: this.json })
+    const poll = Poller(fetchData, emit, {
+      json: this.json,
+      emitUnchanged: this.emitUnchanged,
+    })
 
     this.running = setInterval(poll, this.interval)
   }

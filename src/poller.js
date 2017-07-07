@@ -7,13 +7,14 @@ module.exports = function(fetchData, emit, options = {}) {
       const [ok, result] = await fetchData()
 
       if (ok === lastOk && result === lastResult) {
-        return
+        if (!options.emitUnchanged) {
+          return
+        }
       } else {
         lastOk = ok
         lastResult = result
+        processedResult = options.json ? JSON.parse(result) : result
       }
-
-      processedResult = options.json ? JSON.parse(result) : result
 
       emit('response', processedResult)
       emit(ok ? 'success' : 'failure', processedResult)

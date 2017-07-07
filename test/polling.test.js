@@ -114,5 +114,18 @@ describe('polling behavior', () => {
 
       pollerFor(url('/counter/json'), { json: true }, 3, assertions)
     })
+
+    test('emit unchanged data', done => {
+      const assertions = errorCatcher(done, data => {
+        expect(data).toEqual({
+          response: ['Hi!', 'Hi!', 'Hi!'],
+          success: ['Hi!', 'Hi!', 'Hi!'],
+          failure: [],
+          error: [],
+        })
+      })
+
+      pollerFor(url('/hello'), { emitUnchanged: true }, 3, assertions)
+    })
   })
 })
