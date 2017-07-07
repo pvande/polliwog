@@ -18,14 +18,14 @@ module.exports.router = (req, res) => {
       update('counter', x => x + 1)
       res.setHeader('Cache-Control', 'private,max-age=2')
       res.end(`${state.counter}`)
-      throw 'Routed.'
+      throw 'DONE'
 
     case '/cache/expires':
       update('counter', x => x + 1)
       res.setHeader('Cache-Control', 'private')
       res.setHeader('Expires', relativeUTC(2))
       res.end(`${state.counter}`)
-      throw 'Routed.'
+      throw 'DONE'
 
     case '/cache/skewed-expires':
       update('counter', x => x + 1)
@@ -33,27 +33,35 @@ module.exports.router = (req, res) => {
       res.setHeader('Date', relativeUTC(-32))
       res.setHeader('Expires', relativeUTC(-2))
       res.end(`${state.counter}`)
-      throw 'Routed.'
+      throw 'DONE'
 
     case '/cache/invalid-expires':
       update('counter', x => x + 1)
       res.setHeader('Cache-Control', 'private')
       res.setHeader('Expires', 'Yes.')
       res.end(`${state.counter}`)
-      throw 'Routed.'
+      throw 'DONE'
 
     case '/cache/max-age-and-expires':
       update('counter', x => x + 1)
       res.setHeader('Cache-Control', 'private,max-age=1')
       res.setHeader('Expires', relativeUTC(30))
       res.end(`${state.counter}`)
-      throw 'Routed.'
+      throw 'DONE'
 
-    // case '/cache/no-cache':
-    //   update('counter', x => x + 1)
-    //   res.setHeader('Cache-Control', 'no-cache')
-    //   res.end(`${state.counter}`)
-    //   throw "Routed."
+    case '/cache/no-cache':
+      if (!req.headers['last-modified'] && !req.headers['etag']) {
+        update('counter', x => x + 1)
+        res.setHeader('Cache-Control', 'no-cache')
+        res.setHeader('Expires', relativeUTC(14400))
+        res.setHeader('Last-Modified', relativeUTC(0))
+        res.setHeader('Etag', Math.random())
+        res.end(`${state.counter}`)
+      } else {
+        res.statusCode = 304
+        res.end()
+      }
+      throw 'DONE'
 
     case '/cache/last-modified':
       res.setHeader('Cache-Control', 'private')
@@ -68,7 +76,7 @@ module.exports.router = (req, res) => {
         update('counter', x => x + 1)
         res.end(`${state.counter}`)
       }
-      throw 'Routed.'
+      throw 'DONE'
 
     case '/cache/etag':
       res.setHeader('Cache-Control', 'private')
@@ -83,7 +91,7 @@ module.exports.router = (req, res) => {
         update('counter', x => x + 1)
         res.end(`${state.counter}`)
       }
-      throw 'Routed.'
+      throw 'DONE'
   }
 }
 

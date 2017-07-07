@@ -23,6 +23,9 @@ module.exports = url => {
   const storeCachingDetails = headers => {
     const cacheControl = headers.get('Cache-Control') || ''
     if (cacheControl === 'no-cache') {
+      cacheExpires = date.relativeAge(0)
+      lastModified = undefined
+      etag = undefined
       return
     }
 

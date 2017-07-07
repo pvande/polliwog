@@ -4,13 +4,13 @@ module.exports.router = (req, res) => {
       res.statusCode = 301
       res.setHeader('Location', '/hello')
       res.end()
-      throw 'Routed.'
+      throw 'DONE'
 
     case '/redirect/chain':
       res.statusCode = 301
       res.setHeader('Location', '/redirect/301')
       res.end()
-      throw 'Routed.'
+      throw 'DONE'
   }
 }
 

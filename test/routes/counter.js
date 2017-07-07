@@ -5,12 +5,12 @@ module.exports.router = (req, res) => {
     case '/counter':
       counter++
       res.end(`${counter}`)
-      throw 'Routed.'
+      throw 'DONE'
 
     case '/counter/json':
       counter++
       res.end(`{"number":${counter}}`)
-      throw 'Routed.'
+      throw 'DONE'
   }
 }
 

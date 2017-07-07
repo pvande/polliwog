@@ -4,13 +4,13 @@ module.exports.router = (req, res) => {
       res.statusCode = 400
       res.setHeader('Content-Type', 'text/plain')
       res.end('client error')
-      throw 'Routed.'
+      throw 'DONE'
 
     case '/error/500':
       res.statusCode = 500
       res.setHeader('Content-Type', 'text/plain')
       res.end('server error')
-      throw 'Routed.'
+      throw 'DONE'
   }
 }
 
