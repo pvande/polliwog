@@ -1,4 +1,4 @@
-module.exports = function(fetchData, emit, options = {}) {
+module.exports = function(fetchData, emit, options) {
   let lastOk, lastResult, processedResult
   return async function() {
     try {
