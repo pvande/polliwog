@@ -6,23 +6,28 @@ const defaults = {
   interval: 500,
   json: false,
   emitUnchanged: false,
-  ignoreEtag: false,
+  skipEtag: false,
+  skipLastModified: false,
 }
 module.exports = class Pollster extends EventEmitter {
-  constructor(url, options = {}) {
+  constructor(url, opts = {}) {
     super()
     this.running = false
     this.url = url
-    this.interval = options.interval || defaults.interval
-    this.json = options.json || defaults.json
-    this.emitUnchanged = options.emitUnchanged || defaults.emitUnchanged
-    this.ignoreEtag = options.ignoreEtag || defaults.ignoreEtag
+    this.interval = opts.interval || defaults.interval
+    this.json = opts.json || defaults.json
+    this.emitUnchanged = opts.emitUnchanged || defaults.emitUnchanged
+    this.skipEtag = opts.skipEtag || defaults.skipEtag
+    this.skipLastModified = opts.skipLastModified || defaults.skipLastModified
   }
 
   start() {
-    const emit = this.emit.bind(this)
-    const fetchData = Fetcher(this.url, { ignoreEtag: this.ignoreEtag })
-    const poll = Poller(fetchData, emit, {
+    const fetchData = Fetcher(this.url, {
+      skipEtag: this.skipEtag,
+      skipLastModified: this.skipLastModified,
+    })
+
+    const poll = Poller(fetchData, this.emit.bind(this), {
       json: this.json,
       emitUnchanged: this.emitUnchanged,
     })

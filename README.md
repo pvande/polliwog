@@ -42,8 +42,12 @@ When `true`, response bodies will be parsed as JSON.
 When `true`, events will be fired following every request (rather than when data
 has changed).
 
-### `ignoreEtag` (default: `false`)
+#### `skipEtag` (default: `false`)
 When `true`, Etags will not be considered when testing cache validity.
+
+#### `skipLastModified` (default: `false`)
+When `true`, the Last-Modified date will not be considered when testing cache
+validity.
 
 ## Events
 

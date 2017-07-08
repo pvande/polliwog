@@ -83,6 +83,20 @@ describe('polling options', () => {
       })
     })
 
-    pollerFor(url('/cache/etag'), { ignoreEtag: true }, 5, assertions)
+    pollerFor(url('/cache/etag'), { skipEtag: true }, 5, assertions)
+  })
+
+  test('ignoring last modified', done => {
+    const assertions = errorCatcher(done, data => {
+      expect(data).toEqual({
+        response: ['1', '2', '3', '4', '5'],
+        success: ['1', '2', '3', '4', '5'],
+        failure: [],
+        error: [],
+      })
+    })
+
+    const options = { skipLastModified: true }
+    pollerFor(url('/cache/last-modified'), options, 5, assertions)
   })
 })

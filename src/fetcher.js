@@ -9,11 +9,11 @@ module.exports = (url, options) => {
   const conditionalHeaders = () => {
     const headers = {}
 
-    if (lastModified) {
+    if (lastModified && !options.skipLastModified) {
       headers['If-Modified-Since'] = lastModified
     }
 
-    if (etag && !options.ignoreEtag) {
+    if (etag && !options.skipEtag) {
       headers['If-None-Match'] = etag
     }
 
