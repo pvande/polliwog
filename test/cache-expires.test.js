@@ -12,18 +12,31 @@ afterEach(done => {
   server.stop(done)
 })
 
-describe('interactions', () => {
-  test('parsing a non-json source as json', done => {
+describe('caching', () => {
+  test('expires support', done => {
     const assertions = errorCatcher(done, data => {
       expect(data).toEqual({
-        response: [],
-        success: [],
+        response: ['1', '2'],
+        success: ['1', '2'],
         failure: [],
-        error: [new SyntaxError('Unexpected token H in JSON at position 0')],
+        error: [],
       })
     })
 
-    pollerFor(url('/hello'), { json: true }, 1, assertions)
+    pollerFor(url('/cache/expires'), {}, 5, assertions)
+  })
+
+  test('expires timestamp is unparsable', done => {
+    const assertions = errorCatcher(done, data => {
+      expect(data).toEqual({
+        response: ['1', '2', '3'],
+        success: ['1', '2', '3'],
+        failure: [],
+        error: [],
+      })
+    })
+
+    pollerFor(url('/cache/invalid-expires'), {}, 3, assertions)
   })
 
   test('date and expires timestamps are skewed', done => {
@@ -37,19 +50,6 @@ describe('interactions', () => {
     })
 
     pollerFor(url('/cache/skewed-expires'), {}, 5, assertions)
-  })
-
-  test('expires timestamp is unparsable', done => {
-    const assertions = errorCatcher(done, data => {
-      expect(data).toEqual({
-        response: ['1', '2', '3', '4', '5'],
-        success: ['1', '2', '3', '4', '5'],
-        failure: [],
-        error: [],
-      })
-    })
-
-    pollerFor(url('/cache/invalid-expires'), {}, 5, assertions)
   })
 
   test('endpoint specifies both max-age and expires headers', done => {

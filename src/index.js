@@ -9,8 +9,8 @@ module.exports = class Pollster extends EventEmitter {
     this.running = false
     this.url = url
     this.interval = options.interval || defaults.interval
-    this.emitUnchanged = options.emitUnchanged || defaults.emitUnchanged
     this.json = options.json || defaults.json
+    this.emitUnchanged = options.emitUnchanged || defaults.emitUnchanged
   }
 
   start() {
