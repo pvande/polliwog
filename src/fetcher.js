@@ -2,7 +2,7 @@ const { fetch } = require('fetch-ponyfill')()
 const date = require('./date')
 
 module.exports = (url, options) => {
-  let cacheCode, cacheValue
+  let cache
   let lastModified, etag
   let cacheExpires = new Date()
 
@@ -45,21 +45,24 @@ module.exports = (url, options) => {
 
   return async function() {
     if (cacheExpires > new Date()) {
-      return [cacheCode, cacheValue]
+      return cache
     }
 
     const response = await fetch(url, { headers: conditionalHeaders() })
 
     if ((etag || lastModified) && response.status == 304) {
-      return [cacheCode, cacheValue]
+      return cache
     }
 
     storeCachingDetails(response.headers)
 
-    const body = await response.text()
-    cacheCode = response.ok
-    cacheValue = body
+    cache = {
+      ok: response.ok,
+      code: response.status,
+      headers: response.headers,
+      body: await response.text(),
+    }
 
-    return [cacheCode, cacheValue]
+    return cache
   }
 }

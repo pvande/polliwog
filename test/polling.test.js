@@ -16,7 +16,7 @@ describe('polling behavior', () => {
   test('performs periodic requests', done => {
     const assertions = errorCatcher(done, data => {
       expect(data).toEqual({
-        response: ['1', '2', '3'],
+        response: [[200, '1'], [200, '2'], [200, '3']],
         success: ['1', '2', '3'],
         failure: [],
         error: [],
@@ -29,7 +29,7 @@ describe('polling behavior', () => {
   test('follows redirects', done => {
     const assertions = errorCatcher(done, data => {
       expect(data).toEqual({
-        response: ['Hi!'],
+        response: [[200, 'Hi!']],
         success: ['Hi!'],
         failure: [],
         error: [],
@@ -43,7 +43,7 @@ describe('polling behavior', () => {
     test('4xx errors', done => {
       const assertions = errorCatcher(done, data => {
         expect(data).toEqual({
-          response: ['client error'],
+          response: [[400, 'client error']],
           success: [],
           failure: ['client error'],
           error: [],
@@ -56,7 +56,7 @@ describe('polling behavior', () => {
     test('5xx errors', done => {
       const assertions = errorCatcher(done, data => {
         expect(data).toEqual({
-          response: ['server error'],
+          response: [[500, 'server error']],
           success: [],
           failure: ['server error'],
           error: [],
@@ -64,6 +64,25 @@ describe('polling behavior', () => {
       })
 
       pollerFor(url('/error/500'), {}, 1, assertions)
+    })
+
+    test('intermittent failures', done => {
+      const assertions = errorCatcher(done, data => {
+        expect(data).toEqual({
+          response: [
+            [200, '1'],
+            [500, 'server error'],
+            [200, '1'],
+            [500, 'server error'],
+            [200, '1'],
+          ],
+          success: ['1'],
+          failure: ['server error'],
+          error: [],
+        })
+      })
+
+      pollerFor(url('/error/intermittent'), {}, 5, assertions)
     })
 
     test('network errors', done => {

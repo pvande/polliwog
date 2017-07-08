@@ -22,7 +22,7 @@ describe('polling options', () => {
       expect(duration).toBeGreaterThan(400 /* ms */)
       expect(duration).toBeLessThan(450 /* ms */)
       expect(data).toEqual({
-        response: ['1', '2', '3', '4'],
+        response: [[200, '1'], [200, '2'], [200, '3'], [200, '4']],
         success: ['1', '2', '3', '4'],
         failure: [],
         error: [],
@@ -36,7 +36,11 @@ describe('polling options', () => {
     test('valid', done => {
       const assertions = errorCatcher(done, data => {
         expect(data).toEqual({
-          response: [{ number: 1 }, { number: 2 }, { number: 3 }],
+          response: [
+            [200, { number: 1 }],
+            [200, { number: 2 }],
+            [200, { number: 3 }],
+          ],
           success: [{ number: 1 }, { number: 2 }, { number: 3 }],
           failure: [],
           error: [],
@@ -63,7 +67,7 @@ describe('polling options', () => {
   test('emit unchanged data', done => {
     const assertions = errorCatcher(done, data => {
       expect(data).toEqual({
-        response: ['Hi!', 'Hi!', 'Hi!'],
+        response: [[200, 'Hi!'], [200, 'Hi!'], [200, 'Hi!']],
         success: ['Hi!', 'Hi!', 'Hi!'],
         failure: [],
         error: [],
@@ -76,7 +80,7 @@ describe('polling options', () => {
   test('ignoring etags', done => {
     const assertions = errorCatcher(done, data => {
       expect(data).toEqual({
-        response: ['1', '2', '3', '4', '5'],
+        response: [[200, '1'], [200, '2'], [200, '3'], [200, '4'], [200, '5']],
         success: ['1', '2', '3', '4', '5'],
         failure: [],
         error: [],
@@ -89,7 +93,7 @@ describe('polling options', () => {
   test('ignoring last modified', done => {
     const assertions = errorCatcher(done, data => {
       expect(data).toEqual({
-        response: ['1', '2', '3', '4', '5'],
+        response: [[200, '1'], [200, '2'], [200, '3'], [200, '4'], [200, '5']],
         success: ['1', '2', '3', '4', '5'],
         failure: [],
         error: [],

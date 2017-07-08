@@ -3,7 +3,7 @@ const Pollster = require('../src/index')
 module.exports.pollerFor = (url, options, requests, done) => {
   const data = { response: [], success: [], failure: [], error: [] }
   const p = new Pollster(url, options)
-  p.on('response', x => data.response.push(x))
+  p.on('response', (code, _, body) => data.response.push([code, body]))
   p.on('success', x => data.success.push(x))
   p.on('failure', x => data.failure.push(x))
   p.on('error', x => data.error.push(x))

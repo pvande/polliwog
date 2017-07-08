@@ -16,7 +16,7 @@ describe('caching', () => {
   test('expires support', done => {
     const assertions = errorCatcher(done, data => {
       expect(data).toEqual({
-        response: ['1', '2'],
+        response: [[200, '1'], [200, '2']],
         success: ['1', '2'],
         failure: [],
         error: [],
@@ -29,7 +29,7 @@ describe('caching', () => {
   test('expires timestamp is unparsable', done => {
     const assertions = errorCatcher(done, data => {
       expect(data).toEqual({
-        response: ['1', '2', '3'],
+        response: [[200, '1'], [200, '2'], [200, '3']],
         success: ['1', '2', '3'],
         failure: [],
         error: [],
@@ -42,7 +42,7 @@ describe('caching', () => {
   test('date and expires timestamps are skewed', done => {
     const assertions = errorCatcher(done, data => {
       expect(data).toEqual({
-        response: ['1'],
+        response: [[200, '1']],
         success: ['1'],
         failure: [],
         error: [],
@@ -55,7 +55,7 @@ describe('caching', () => {
   test('endpoint specifies both max-age and expires headers', done => {
     const assertions = errorCatcher(done, data => {
       expect(data).toEqual({
-        response: ['1', '2', '3'],
+        response: [[200, '1'], [200, '2'], [200, '3']],
         success: ['1', '2', '3'],
         failure: [],
         error: [],

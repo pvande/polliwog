@@ -16,7 +16,7 @@ describe('caching', () => {
   test('etag support', done => {
     const assertions = errorCatcher(done, data => {
       expect(data).toEqual({
-        response: ['1', '2', '3'],
+        response: [[200, '1'], [200, '2'], [200, '3']],
         success: ['1', '2', '3'],
         failure: [],
         error: [],

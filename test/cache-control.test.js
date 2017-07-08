@@ -16,7 +16,14 @@ describe('caching', () => {
   test('no-cache support', done => {
     const assertions = errorCatcher(done, data => {
       expect(data).toEqual({
-        response: ['1', '2', '3', '4', '5', '6'],
+        response: [
+          [200, '1'],
+          [200, '2'],
+          [200, '3'],
+          [200, '4'],
+          [200, '5'],
+          [200, '6'],
+        ],
         success: ['1', '2', '3', '4', '5', '6'],
         failure: [],
         error: [],
@@ -29,7 +36,7 @@ describe('caching', () => {
   test('max-age support', done => {
     const assertions = errorCatcher(done, data => {
       expect(data).toEqual({
-        response: ['1', '2'],
+        response: [[200, '1'], [200, '2']],
         success: ['1', '2'],
         failure: [],
         error: [],
