@@ -1,7 +1,7 @@
 const { fetch } = require('fetch-ponyfill')()
 const date = require('./date')
 
-module.exports = url => {
+module.exports = (url, options) => {
   let cacheCode, cacheValue
   let lastModified, etag
   let cacheExpires = new Date()
@@ -13,7 +13,7 @@ module.exports = url => {
       headers['If-Modified-Since'] = lastModified
     }
 
-    if (etag) {
+    if (etag && !options.ignoreEtag) {
       headers['If-None-Match'] = etag
     }
 
