@@ -26,5 +26,8 @@
   "devDependencies": {
     "jest": "^20.0.4",
     "prettify": "^0.1.7"
-  }
+  },
+   "engines": {
+     "node" : ">= 6.4.0"
+   }
 }
