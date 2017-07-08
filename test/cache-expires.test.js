@@ -23,7 +23,7 @@ describe('caching', () => {
       })
     })
 
-    pollerFor(url('/cache/expires'), {}, 5, assertions)
+    pollerFor(url('/cache/expires'), {}, 6, assertions)
   })
 
   test('expires timestamp is unparsable', done => {
