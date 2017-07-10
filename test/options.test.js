@@ -67,10 +67,10 @@ describe('polling options', () => {
     }))
 
   test('ignoring etags', () =>
-    poll(url('/cache/etag'), { skipEtag: true }).times(5).run(data => {
+    poll(url('/cache/etag'), { skipEtag: true }).times(4).run(data => {
       expect(data).toEqual({
-        response: [[200, '1'], [200, '2'], [200, '3'], [200, '4'], [200, '5']],
-        success: ['1', '2', '3', '4', '5'],
+        response: [[200, '1'], [200, '2'], [200, '3'], [200, '4']],
+        success: ['1', '2', '3', '4'],
         failure: [],
         error: [],
       })
@@ -78,17 +78,11 @@ describe('polling options', () => {
 
   test('ignoring last modified', () =>
     poll(url('/cache/last-modified'), { skipLastModified: true })
-      .times(5)
+      .times(4)
       .run(data => {
         expect(data).toEqual({
-          response: [
-            [200, '1'],
-            [200, '2'],
-            [200, '3'],
-            [200, '4'],
-            [200, '5'],
-          ],
-          success: ['1', '2', '3', '4', '5'],
+          response: [[200, '1'], [200, '2'], [200, '3'], [200, '4']],
+          success: ['1', '2', '3', '4'],
           failure: [],
           error: [],
         })

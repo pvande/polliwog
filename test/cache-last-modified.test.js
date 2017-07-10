@@ -14,8 +14,11 @@ afterEach(done => {
 
 describe('caching', () => {
   test('ignoring etags', () =>
-    poll(url('/cache/last-modified')).responses(3).run(data => {
-      expect(server.requests.total).toBeGreaterThanOrEqual(5)
+    poll(url('/cache/last-modified')).times(6).run(data => {
+      expect(server.requests.total).toEqual(6)
+      expect(server.requests[200]).toEqual(3)
+      expect(server.requests[304]).toEqual(3)
+
       expect(data).toEqual({
         response: [[200, '1'], [200, '2'], [200, '3']],
         success: ['1', '2', '3'],

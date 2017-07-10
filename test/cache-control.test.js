@@ -25,7 +25,7 @@ describe('caching', () => {
     }))
 
   test('max-age support', () =>
-    poll(url('/cache/max-age')).times(6).run(data => {
+    poll(url('/cache/max-age')).seconds(2.5).run(data => {
       expect(data).toEqual({
         response: [[200, '1'], [200, '2']],
         success: ['1', '2'],
