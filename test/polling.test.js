@@ -24,38 +24,38 @@ describe('polling behavior', () => {
     }))
 
   test('follows redirects', () =>
-    poll(url('/redirect/chain')).times(1).run(data =>
+    poll(url('/redirect/chain')).times(1).run(data => {
       expect(data).toEqual({
         response: [[200, 'Hi!']],
         success: ['Hi!'],
         failure: [],
         error: [],
-      }),
-    ))
+      })
+    }))
 
   describe('broadcasts unsuccessful requests', () => {
     test('4xx errors', () =>
-      poll(url('/error/400')).times(1).run(data =>
+      poll(url('/error/400')).times(1).run(data => {
         expect(data).toEqual({
           response: [[400, 'client error']],
           success: [],
           failure: ['client error'],
           error: [],
-        }),
-      ))
+        })
+      }))
 
     test('5xx errors', () =>
-      poll(url('/error/500')).times(1).run(data =>
+      poll(url('/error/500')).times(1).run(data => {
         expect(data).toEqual({
           response: [[500, 'server error']],
           success: [],
           failure: ['server error'],
           error: [],
-        }),
-      ))
+        })
+      }))
 
     test('intermittent failures', () =>
-      poll(url('/error/intermittent')).times(5).run(data =>
+      poll(url('/error/intermittent')).times(5).run(data => {
         expect(data).toEqual({
           response: [
             [200, '1'],
@@ -67,11 +67,11 @@ describe('polling behavior', () => {
           success: ['1'],
           failure: ['server error'],
           error: [],
-        }),
-      ))
+        })
+      }))
 
     test('network errors', () =>
-      poll(url(':300000')).times(1).run(data =>
+      poll(url(':300000')).times(1).run(data => {
         expect(data).toEqual({
           response: [],
           success: [],
@@ -79,7 +79,7 @@ describe('polling behavior', () => {
           error: [
             new RangeError('"port" option should be >= 0 and < 65536: 300000'),
           ],
-        }),
-      ))
+        })
+      }))
   })
 })
