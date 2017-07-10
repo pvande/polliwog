@@ -1,5 +1,5 @@
 const TestServer = require('./server')
-const { pollerFor, errorCatcher } = require('./helpers')
+const { poll } = require('./helpers')
 
 const server = new TestServer()
 const url = path => `http://${server.hostname}:${server.port}${path}`
@@ -13,36 +13,24 @@ afterEach(done => {
 })
 
 describe('caching', () => {
-  test('no-cache support', done => {
-    const assertions = errorCatcher(done, data => {
+  test('no-cache support', () =>
+    poll(url('/cache/no-cache')).times(3).run(data => {
+      expect(server.requests.total).toEqual(3)
       expect(data).toEqual({
-        response: [
-          [200, '1'],
-          [200, '2'],
-          [200, '3'],
-          [200, '4'],
-          [200, '5'],
-          [200, '6'],
-        ],
-        success: ['1', '2', '3', '4', '5', '6'],
+        response: [[200, '1'], [200, '2'], [200, '3']],
+        success: ['1', '2', '3'],
         failure: [],
         error: [],
       })
-    })
+    }))
 
-    pollerFor(url('/cache/no-cache'), {}, 6, assertions)
-  })
-
-  test('max-age support', done => {
-    const assertions = errorCatcher(done, data => {
+  test('max-age support', () =>
+    poll(url('/cache/max-age')).times(6).run(data => {
       expect(data).toEqual({
         response: [[200, '1'], [200, '2']],
         success: ['1', '2'],
         failure: [],
         error: [],
       })
-    })
-
-    pollerFor(url('/cache/max-age'), {}, 6, assertions)
-  })
+    }))
 })

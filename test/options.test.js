@@ -1,5 +1,5 @@
 const TestServer = require('./server')
-const { pollerFor, errorCatcher } = require('./helpers')
+const { poll } = require('./helpers')
 
 const server = new TestServer()
 const url = path => `http://${server.hostname}:${server.port}${path}`
@@ -13,9 +13,9 @@ afterEach(done => {
 })
 
 describe('polling options', () => {
-  test('custom intervals', done => {
+  test('custom intervals', () => {
     const startedAt = new Date()
-    const assertions = errorCatcher(done, data => {
+    return poll(url('/counter'), { interval: 100 }).times(4).run(data => {
       const finishedAt = new Date()
       const duration = finishedAt.getTime() - startedAt.getTime()
 
@@ -28,13 +28,11 @@ describe('polling options', () => {
         error: [],
       })
     })
-
-    pollerFor(url('/counter'), { interval: 100 }, 4, assertions)
   })
 
   describe('json', () => {
-    test('valid', done => {
-      const assertions = errorCatcher(done, data => {
+    test('valid', () =>
+      poll(url('/counter/json'), { json: true }).times(3).run(data => {
         expect(data).toEqual({
           response: [
             [200, { number: 1 }],
@@ -45,62 +43,54 @@ describe('polling options', () => {
           failure: [],
           error: [],
         })
-      })
+      }))
 
-      pollerFor(url('/counter/json'), { json: true }, 3, assertions)
-    })
-
-    test('invalid', done => {
-      const assertions = errorCatcher(done, data => {
+    test('invalid', () =>
+      poll(url('/hello'), { json: true }).times(1).run(data => {
         expect(data).toEqual({
           response: [],
           success: [],
           failure: [],
           error: [new SyntaxError('Unexpected token H in JSON at position 0')],
         })
-      })
-
-      pollerFor(url('/hello'), { json: true }, 1, assertions)
-    })
+      }))
   })
 
-  test('emit unchanged data', done => {
-    const assertions = errorCatcher(done, data => {
+  test('emit unchanged data', () =>
+    poll(url('/hello'), { emitUnchanged: true }).times(3).run(data => {
       expect(data).toEqual({
         response: [[200, 'Hi!'], [200, 'Hi!'], [200, 'Hi!']],
         success: ['Hi!', 'Hi!', 'Hi!'],
         failure: [],
         error: [],
       })
-    })
+    }))
 
-    pollerFor(url('/hello'), { emitUnchanged: true }, 3, assertions)
-  })
-
-  test('ignoring etags', done => {
-    const assertions = errorCatcher(done, data => {
+  test('ignoring etags', () =>
+    poll(url('/cache/etag'), { skipEtag: true }).times(5).run(data => {
       expect(data).toEqual({
         response: [[200, '1'], [200, '2'], [200, '3'], [200, '4'], [200, '5']],
         success: ['1', '2', '3', '4', '5'],
         failure: [],
         error: [],
       })
-    })
+    }))
 
-    pollerFor(url('/cache/etag'), { skipEtag: true }, 5, assertions)
-  })
-
-  test('ignoring last modified', done => {
-    const assertions = errorCatcher(done, data => {
-      expect(data).toEqual({
-        response: [[200, '1'], [200, '2'], [200, '3'], [200, '4'], [200, '5']],
-        success: ['1', '2', '3', '4', '5'],
-        failure: [],
-        error: [],
-      })
-    })
-
-    const options = { skipLastModified: true }
-    pollerFor(url('/cache/last-modified'), options, 5, assertions)
-  })
+  test('ignoring last modified', () =>
+    poll(url('/cache/last-modified'), { skipLastModified: true })
+      .times(5)
+      .run(data => {
+        expect(data).toEqual({
+          response: [
+            [200, '1'],
+            [200, '2'],
+            [200, '3'],
+            [200, '4'],
+            [200, '5'],
+          ],
+          success: ['1', '2', '3', '4', '5'],
+          failure: [],
+          error: [],
+        })
+      }))
 })

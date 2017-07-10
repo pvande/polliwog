@@ -1,5 +1,5 @@
 const TestServer = require('./server')
-const { pollerFor, errorCatcher } = require('./helpers')
+const { poll } = require('./helpers')
 
 const server = new TestServer()
 const url = path => `http://${server.hostname}:${server.port}${path}`
@@ -13,16 +13,14 @@ afterEach(done => {
 })
 
 describe('caching', () => {
-  test('last-modified support', done => {
-    const assertions = errorCatcher(done, data => {
+  test('ignoring etags', () =>
+    poll(url('/cache/last-modified')).responses(3).run(data => {
+      expect(server.requests.total).toBeGreaterThanOrEqual(5)
       expect(data).toEqual({
         response: [[200, '1'], [200, '2'], [200, '3']],
         success: ['1', '2', '3'],
         failure: [],
         error: [],
       })
-    })
-
-    pollerFor(url('/cache/last-modified'), {}, 6, assertions)
-  })
+    }))
 })
