@@ -33,6 +33,7 @@ module.exports = class Pollster extends EventEmitter {
     })
 
     this.running = setInterval(poll, this.interval)
+    poll()
   }
 
   stop() {

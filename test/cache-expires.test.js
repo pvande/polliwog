@@ -14,7 +14,7 @@ afterEach(done => {
 
 describe('caching', () => {
   test('expires support', () =>
-    poll(url('/cache/expires')).seconds(3.5).run(data => {
+    poll(url('/cache/expires')).seconds(3).run(data => {
       expect(server.requests.total).toEqual(2)
       expect(data).toEqual({
         response: [[200, '1'], [200, '2']],

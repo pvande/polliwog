@@ -19,8 +19,8 @@ describe('polling options', () => {
       const finishedAt = new Date()
       const duration = finishedAt.getTime() - startedAt.getTime()
 
-      expect(duration).toBeGreaterThan(400 /* ms */)
-      expect(duration).toBeLessThan(450 /* ms */)
+      expect(duration).toBeGreaterThan(300 /* ms */)
+      expect(duration).toBeLessThan(350 /* ms */)
       expect(data).toEqual({
         response: [[200, '1'], [200, '2'], [200, '3'], [200, '4']],
         success: ['1', '2', '3', '4'],
