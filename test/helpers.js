@@ -54,12 +54,3 @@ module.exports.poll = (...pollsterArgs) => {
     },
   }
 }
-
-module.exports.errorCatcher = (done, fn) => (...args) => {
-  try {
-    fn(...args)
-    done()
-  } catch (e) {
-    done.fail(e)
-  }
-}
