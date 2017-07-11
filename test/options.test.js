@@ -66,6 +66,50 @@ describe('polling options', () => {
       })
     }))
 
+  describe('skipping the cache', () => {
+    test('ignores max-age', () =>
+      poll(url('/cache/max-age'), { skipCache: true }).times(4).run(data => {
+        expect(data).toEqual({
+          response: [[200, '1'], [200, '2'], [200, '3'], [200, '4']],
+          success: ['1', '2', '3', '4'],
+          failure: [],
+          error: [],
+        })
+      }))
+
+    test('ignores expires', () =>
+      poll(url('/cache/expires'), { skipCache: true }).times(4).run(data => {
+        expect(data).toEqual({
+          response: [[200, '1'], [200, '2'], [200, '3'], [200, '4']],
+          success: ['1', '2', '3', '4'],
+          failure: [],
+          error: [],
+        })
+      }))
+
+    test('still uses etags for conditional requests', () =>
+      poll(url('/cache/etag'), { skipCache: true }).times(4).run(data => {
+        expect(data).toEqual({
+          response: [[200, '1'], [200, '2']],
+          success: ['1', '2'],
+          failure: [],
+          error: [],
+        })
+      }))
+
+    test('still uses last-modified for conditional requests', () =>
+      poll(url('/cache/last-modified'), { skipCache: true })
+        .times(4)
+        .run(data => {
+          expect(data).toEqual({
+            response: [[200, '1'], [200, '2']],
+            success: ['1', '2'],
+            failure: [],
+            error: [],
+          })
+        }))
+  })
+
   test('ignoring etags', () =>
     poll(url('/cache/etag'), { skipEtag: true }).times(4).run(data => {
       expect(data).toEqual({

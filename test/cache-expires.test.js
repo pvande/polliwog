@@ -60,7 +60,7 @@ describe('caching', () => {
   //
   // @see RFC 2616, section 13.2.4
   test('endpoint specifies both max-age and expires headers', () =>
-    poll(url('/cache/max-age-and-expires')).seconds(3).run(data => {
+    poll(url('/cache/max-age-and-expires')).seconds(3.5).run(data => {
       expect(server.requests.total).toEqual(3)
       expect(data).toEqual({
         response: [[200, '1'], [200, '2'], [200, '3']],

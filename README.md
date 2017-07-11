@@ -42,6 +42,11 @@ When `true`, response bodies will be parsed as JSON.
 When `true`, events will be fired following every request (rather than when data
 has changed).
 
+#### `skipCache` (default: `false`)
+When `true`, locally cached data will always be considered expired.  *Note that
+on its own, this will still result in conditional requests based on the `Etag`
+and `Last-Modified` headers being made.*
+
 #### `skipEtag` (default: `false`)
 When `true`, Etags will not be considered when testing cache validity.
 

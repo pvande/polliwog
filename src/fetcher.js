@@ -44,7 +44,7 @@ module.exports = (url, options) => {
   }
 
   return async function() {
-    if (cacheExpires > new Date()) {
+    if (cacheExpires > new Date() && !options.skipCache) {
       return cache
     }
 
