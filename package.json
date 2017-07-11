@@ -1,10 +1,11 @@
 {
   "name": "pollster",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Making HTTP polling less annoying for everyone.",
   "keywords": [
     "polling",
-    "http"
+    "http",
+    "node"
   ],
   "license": "MIT",
   "author": "Pieter van de Bruggen",
@@ -21,13 +22,13 @@
     "test": "jest"
   },
   "dependencies": {
-    "fetch-ponyfill": "^4.0.0"
+    "node-fetch": "^1.6.3"
   },
   "devDependencies": {
     "jest": "^20.0.4",
     "prettify": "^0.1.7"
   },
-   "engines": {
-     "node" : ">= 7.10.0"
-   }
+  "engines": {
+    "node": ">= 7.10.0"
+  }
 }

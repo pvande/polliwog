@@ -1,4 +1,4 @@
-const { fetch } = require('fetch-ponyfill')()
+const fetch = require('node-fetch')
 const date = require('./date')
 
 module.exports = (url, options) => {
