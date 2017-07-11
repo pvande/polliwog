@@ -89,12 +89,12 @@ Constructs a new poller for the specified URL.  See
 #### `on(event, callback)`
 #### `addListener(event, callback)`
 
-Regiiwogs a new callback for the named event.  See [Events](#events) for a list
+Registers a new callback for the named event.  See [Events](#events) for a list
 of the supported events.
 
 #### `removeListener(event, callback)`
 
-Unregiiwogs a callback from the named event.
+Unregisters a callback from the named event.
 
 #### `start()`
 
