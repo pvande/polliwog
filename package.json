@@ -10,13 +10,13 @@
   "license": "MIT",
   "author": "Pieter van de Bruggen",
   "main": "src/index.js",
-  "homepage": "https://github.com/pvande/pollster#readme",
+  "homepage": "https://github.com/pvande/polliwog#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pvande/pollster.git"
+    "url": "git+https://github.com/pvande/polliwog.git"
   },
   "bugs": {
-    "url": "https://github.com/pvande/pollster/issues"
+    "url": "https://github.com/pvande/polliwog/issues"
   },
   "scripts": {
     "test": "jest"

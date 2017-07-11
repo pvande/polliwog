@@ -1,8 +1,8 @@
-# Pollster
+# Polliwog
 
 Sometimes it's unavoidable.  The only way to get updates from that web service
 you love is to nag at it, endlessly repeating the same HTTP request like a child
-who's grown tired of the car ride.  **Pollster manages the details so that you
+who's grown tired of the car ride.  **Polliwog manages the details so that you
 can focus on the data.**
 
 ## Features
@@ -14,20 +14,20 @@ can focus on the data.**
 
 ## Getting Started
 
-There's no better way to explain Pollster than with an example.
+There's no better way to explain Polliwog than with an example.
 
 ``` javascript
 const url = 'http://date.jsontest.com'
 const options = { json: true }
 
-const p = new Pollster(url, options)
+const p = new Polliwog(url, options)
 p.on('response', console.log)
 p.start()
 ```
 
 ## Configuration
 
-The Pollster constructor takes two arguments, he HTTP or HTTPS URL to poll, and
+The Polliwog constructor takes two arguments, he HTTP or HTTPS URL to poll, and
 an optional hash of configuration options.
 
 The following configuration options are supported.
@@ -81,7 +81,7 @@ for testing.
 
 ## API
 
-#### `new Pollster(url, options)`
+#### `new Polliwog(url, options)`
 
 Constructs a new poller for the specified URL.  See
 [Configuration](#configuration) for a list of the supported options.
@@ -89,12 +89,12 @@ Constructs a new poller for the specified URL.  See
 #### `on(event, callback)`
 #### `addListener(event, callback)`
 
-Registers a new callback for the named event.  See [Events](#events) for a list
+Regiiwogs a new callback for the named event.  See [Events](#events) for a list
 of the supported events.
 
 #### `removeListener(event, callback)`
 
-Unregisters a callback from the named event.
+Unregiiwogs a callback from the named event.
 
 #### `start()`
 
